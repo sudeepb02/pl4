@@ -3,6 +3,7 @@
 #include<sys/types.h>
 #include<sys/socket.h>
 #include<netinet/in.h>
+#include<string.h>
 using namespace std;
 
 int main()
@@ -11,7 +12,7 @@ int main()
 	struct sockaddr_in adserver;
 	struct hostent *server;
 	char hostname[50];
-	char data[256];
+//	char data;
 	
 	//Get data from user
 	cout<<"Enter port number : ";
@@ -37,8 +38,26 @@ int main()
 		cout<<"Error connecting to server";
 	}
 
-	n = recv(sockfd, data, 256, 0);
-	cout<<data;
+	//Receiving data 
+	int len;
+	char data[2];
+	n = recv(sockfd, data, 1, 0);
+	data[1] = '\0';
+	len = 23;
+	cout<<"Total bytes to be received : "<<len;
+	int cf=0;
+	char* finalmsg;
+	finalmsg[0] = '\0';
+
+	while(cf<=len){
+		n = recv(sockfd, data, 1, 0);
+		data[1] = '\0';
+		cout<<"Data packet "<<cf<<" received"<<endl;
+		strcat(finalmsg, data);
+		send(sockfd, data, 1, 0);
+		cf++;
+	}
+	cout<<finalmsg;
 	return 0;
 }
 
